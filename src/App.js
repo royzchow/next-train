@@ -11,7 +11,7 @@ function App() {
   const getData = () => {
     axios.get(baseURL).then((response) => {
       setPost(response.data);
-      setTime(Date.parse(response.data.data["TKL-LHP"].DOWN[0].time) - new Date())
+      setTime(Math.max(0,Date.parse(response.data.data["TKL-LHP"].DOWN[0].time) - new Date()))
       // setPost(JSON.parse('{"status":1,"message":"successful","sys_time":"2023-12-11 0:44:56","curr_time":"2023-12-11 00:44:56","data":{"TKL-LHP":{"curr_time":"2023-12-11 00:44:56","sys_time":"2023-12-11 0:44:56","DOWN":[{"ttnt":"4","valid":"Y","plat":"2","time":"2023-12-11 00:48:00","source":"-","dest":"TIK","seq":"1"}]}},"isdelay":"N"}'))
     });
   }
@@ -34,7 +34,7 @@ function App() {
   useEffect(() => {
     if(post){
       const interval = setInterval(() => {
-        setTime(Date.parse(post.data["TKL-LHP"].DOWN[0].time) - new Date())
+        setTime(Math.max(0,Date.parse(post.data["TKL-LHP"].DOWN[0].time) - new Date()))
       }, 1000);
       return () => clearInterval(interval);
     }
