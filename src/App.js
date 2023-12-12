@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import { toBeInTheDocument } from "@testing-library/jest-dom/dist/matchers";
 
 const baseURL = "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TKL&sta=LHP";
 
@@ -7,8 +8,10 @@ function App() {
 
   const [post, setPost] = useState(null);
   const [time, setTime] = useState(null);
+  const [count, setCount] = useState(0);
 
   const getData = () => {
+    setCount(count + 1);
     axios.get(baseURL).then((response) => {
       setPost(response.data);
       setTime(Math.max(0,Date.parse(response.data.data["TKL-LHP"].DOWN[0].time) - new Date()))
@@ -21,8 +24,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    time <= 0 && getData();
-  }, [time])
+    if(time <= 0){
+      const interval = setInterval(() => {
+        getData();
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [count])
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -54,9 +62,15 @@ function App() {
       }}>
         <div style={{ alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ alignItems: 'center', justifyContent: 'center', fontSize: 100 }}>
-            {time && <span style={{color: "white"}}>{('0' + Math.floor(time/1000/60)).slice(-2)}</span>}
+            {time ? 
+              <span style={{color: "white"}}>{('0' + Math.floor(time/1000/60)).slice(-2)}</span> : 
+              <span style={{color: "white"}}>-- </span>
+            }
             <span style={{color: 'white'}}>:</span>
-            {time && <span style={{color: "white"}}>{('0' + Math.floor(time/1000%60)).slice(-2)}</span>}
+            {time ?
+              <span style={{color: "white"}}>{('0' + Math.floor(time/1000%60)).slice(-2)}</span> :
+              <span style={{color: "white"}}> --</span>
+            }
           </div>
           {post && <span style={{color: "white"}}>Next arrvial: {post.data["TKL-LHP"].DOWN[0].time}</span>}
         </div>
