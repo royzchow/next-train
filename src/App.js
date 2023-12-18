@@ -61,7 +61,7 @@ function App() {
         bottom: 0, width: "100vw", backgroundImage: "linear-gradient(to bottom, #294666, #172339)"
       }}>
         <div style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ alignItems: 'center', justifyContent: 'center', fontSize: 100 }}>
+          <div style={{  alignItems: 'center', justifyContent: 'center', fontSize: 100 }}>
             {time ? 
               <span style={{color: "white"}}>{('0' + Math.floor(time/1000/60)).slice(-2)}</span> : 
               <span style={{color: "white"}}>-- </span>
@@ -73,6 +73,9 @@ function App() {
             }
           </div>
           {post && <span style={{color: "white"}}>Next arrvial: {post.data["TKL-LHP"].DOWN[0].time}</span>}
+          <div onClick={() => {window.location.reload()}} style={{ marginTop: 48 }}>
+            <img src="./refresh.png" style={{height: 32, width: 32}} />
+          </div>
         </div>
       </div>
     </center>
